@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, bench, describe } from 'vitest'
+import { bench, describe } from 'vitest'
 import { LINK_CASES } from './cases'
 import { createClientScenario, samplingOptions } from './scenario'
 import type * as App from './src/client'
@@ -19,8 +19,6 @@ for (const { id, label } of LINK_CASES) {
         scenario.teardown()
       }
     }
-    beforeEach(scenario.setup)
-    afterEach(finish)
 
     bench(`client Links: ${id}`, scenario.batch, {
       ...samplingOptions,

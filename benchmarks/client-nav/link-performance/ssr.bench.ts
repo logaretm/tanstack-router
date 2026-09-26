@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, bench, describe } from 'vitest'
+import { bench, describe } from 'vitest'
 import { LINK_CASES } from './cases'
 import { createSsrScenario, samplingOptions } from './scenario'
 import type * as App from './src/ssr'
@@ -19,8 +19,6 @@ for (const { id, label } of LINK_CASES) {
         scenario.teardown()
       }
     }
-    beforeEach(scenario.setup)
-    afterEach(finish)
 
     bench(`SSR Links: ${id}`, scenario.batch, {
       ...samplingOptions,
