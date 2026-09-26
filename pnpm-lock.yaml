@@ -309,8 +309,8 @@ importers:
         version: 3.5.25(@typescript/typescript6@6.0.2)
     devDependencies:
       '@codspeed/vitest-plugin':
-        specifier: ^5.7.1
-        version: 5.7.1(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)
+        specifier: ^6.0.0
+        version: 6.0.0(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)
       '@platformatic/flame':
         specifier: ^1.6.0
         version: 1.6.0
@@ -385,8 +385,8 @@ importers:
         version: 3.5.25(@typescript/typescript6@6.0.2)
     devDependencies:
       '@codspeed/vitest-plugin':
-        specifier: ^5.7.1
-        version: 5.7.1(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)
+        specifier: ^6.0.0
+        version: 6.0.0(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)
       '@datadog/pprof':
         specifier: ^5.13.2
         version: 5.13.2
@@ -467,8 +467,8 @@ importers:
         version: 3.5.25(@typescript/typescript6@6.0.2)
     devDependencies:
       '@codspeed/vitest-plugin':
-        specifier: ^5.7.1
-        version: 5.7.1(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)
+        specifier: ^6.0.0
+        version: 6.0.0(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)
       '@datadog/pprof':
         specifier: ^5.13.2
         version: 5.13.2
@@ -537,8 +537,8 @@ importers:
         version: 3.5.25(@typescript/typescript6@6.0.2)
     devDependencies:
       '@codspeed/vitest-plugin':
-        specifier: ^5.7.1
-        version: 5.7.1(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)
+        specifier: ^6.0.0
+        version: 6.0.0(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)
       '@types/react':
         specifier: ^19.2.8
         version: 19.2.9
@@ -16555,15 +16555,15 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@codspeed/core@5.7.1':
-    resolution: {integrity: sha512-7mrFkqaY14rXu3XHv3o7bK3btLK0LFRxfeK3bQC8dLduI/Ty9eq8Hv8rx04FAY/onQbRTx3rUUQg5xprYHpATQ==}
+  '@codspeed/core@6.0.0':
+    resolution: {integrity: sha512-lkBE0sPmrpwi2I1qdHT5NAUbw4uReeE31GQrPTMW7SRzTYS4cLOjB/AdErDxGYaRXLTJR0+D56pfCCAEauezIA==}
 
-  '@codspeed/vitest-plugin@5.7.1':
-    resolution: {integrity: sha512-yKNqaYVxZZPJYkhVHpz30Oem4TUgcI+/IRDD9YHvcAgi0P42CL6TB/+qYjuFOWghFzTPrm3TUbNFoBsevSTbUA==}
+  '@codspeed/vitest-plugin@6.0.0':
+    resolution: {integrity: sha512-t6RTYOMjO5dDeb6G7qCtgWZOBIlKfTgstfLYGNoE5zGHA4m3k2j2PZoiJ94IFgGAm3MqH3rZIn5A/Md4iFOmYw==}
     peerDependencies:
       tinybench: '>=2.9.0'
       vite: ^8.3.4
-      vitest: ^3.2 || ^4
+      vitest: ^3.2 || ^4 || ^5
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -24806,10 +24806,6 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  find-up@6.3.0:
-    resolution: {integrity: sha512-v2ZsoEuVHYy8ZIlYqwPe/39Cy+cFDzp4dXPaxNvkEuouymu+2Jbz0PxpKarJHYJTmv2HWT3O382qY8l4jMWthw==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
   find-up@7.0.0:
     resolution: {integrity: sha512-YyZM99iHrqLKjmt4LJDj58KI+fYyufRLBSYcqycxf//KpBk9FoewoGX0450m9nB44qrZnovzC2oeP5hUibxc/g==}
     engines: {node: '>=18'}
@@ -30478,10 +30474,9 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20260317.1':
     optional: true
 
-  '@codspeed/core@5.7.1(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)':
+  '@codspeed/core@6.0.0(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)':
     dependencies:
       axios: 1.18.1(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)
-      find-up: 6.3.0
       form-data: 4.0.6
       node-gyp-build: 4.8.4
       stack-trace: 1.0.0-pre2
@@ -30489,9 +30484,9 @@ snapshots:
       - debug
       - supports-color
 
-  '@codspeed/vitest-plugin@5.7.1(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)':
+  '@codspeed/vitest-plugin@6.0.0(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)(tinybench@2.9.0)(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))(vitest@4.1.4)':
     dependencies:
-      '@codspeed/core': 5.7.1(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)
+      '@codspeed/core': 6.0.0(debug@4.4.3(supports-color@7.2.0))(supports-color@10.2.2)
       tinybench: 2.9.0
       vite: 8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0)
       vitest: 4.1.4(@opentelemetry/api@1.9.1)(@types/node@25.0.9)(@vitest/ui@4.1.4)(jsdom@29.1.1(@noble/hashes@2.0.1))(msw@2.15.0(@types/node@25.0.9)(@typescript/typescript6@6.0.2))(vite@8.3.4(@types/node@25.0.9)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.97.2)(terser@5.51.2)(tsx@4.20.3)(yaml@2.9.0))
@@ -39725,11 +39720,6 @@ snapshots:
     dependencies:
       locate-path: 6.0.0
       path-exists: 4.0.0
-
-  find-up@6.3.0:
-    dependencies:
-      locate-path: 7.2.0
-      path-exists: 5.0.0
 
   find-up@7.0.0:
     dependencies:
