@@ -5,6 +5,7 @@ import { isRedirect, redirect } from './redirect'
 import { rootRouteId } from './root'
 import { loadRouteChunk } from './load-client'
 import { waitForReason } from './await-signal'
+import { loaderChannel, shouldTrace, traceOperation } from './tracing'
 import {
   getLocationChangeInfo,
   lifecycleEnd,
@@ -21,6 +22,7 @@ import type {
   SsrContextOptions,
 } from './route'
 import type { AnyRedirect } from './redirect'
+import type { LoaderTraceContext, TracingChannel } from './tracing'
 import type { AnyRouter, SSROption } from './router'
 
 declare const serverLanePhase: unique symbol
@@ -78,6 +80,24 @@ export type ServerLoadResult =
       matches: Array<AnyRouteMatch>
     }
   | { type: 'redirect'; redirect: AnyRedirect }
+
+function isRedirectOrNotFound(value: unknown): boolean {
+  return isRedirect(value) || isNotFound(value)
+}
+
+function traceRouteWork<T>(
+  channel: TracingChannel<LoaderTraceContext>,
+  type: LoaderTraceContext['type'],
+  match: AnyRouteMatch,
+  fn: () => T,
+): T {
+  return traceOperation(
+    channel,
+    { type, routeId: match.routeId, match },
+    fn,
+    isRedirectOrNotFound,
+  )
+}
 
 function getRoute(router: AnyRouter, match: AnyRouteMatch): AnyRoute {
   return router.routesById[match.routeId]
@@ -363,7 +383,11 @@ async function contextualize(
     }
 
     try {
-      const beforeLoadContext = await route.options.beforeLoad(options)
+      const beforeLoadContext = await (shouldTrace(loaderChannel)
+        ? traceRouteWork(loaderChannel, 'beforeLoad', match, () =>
+            route.options.beforeLoad!(options),
+          )
+        : route.options.beforeLoad(options))
       signal?.throwIfAborted()
       const outcome = stampNotFound(
         match,
@@ -452,9 +476,22 @@ function createLoaderTask(
       outcome = Promise.resolve<LoaderOutcome>([SUCCESS, undefined])
     } else {
       outcome = Promise.resolve()
-        .then(() =>
-          loader(getLoaderContext(router, lane, match, route, index, tasks)),
-        )
+        .then(() => {
+          const loaderContext = getLoaderContext(
+            router,
+            lane,
+            match,
+            route,
+            index,
+            tasks,
+          )
+
+          return shouldTrace(loaderChannel)
+            ? traceRouteWork(loaderChannel, 'loader', match, () =>
+                loader(loaderContext),
+              )
+            : loader(loaderContext)
+        })
         .then(
           (result) => normalize(result, false),
           (cause) => normalize(cause, true),

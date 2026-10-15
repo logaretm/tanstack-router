@@ -22,7 +22,9 @@ import {
   getNormalizedURL,
   isSsrResponse,
   normalizeSsrResponse,
+  shouldTrace,
   stripSsrResponseBody,
+  traceOperation,
   waitForRequest,
 } from '@tanstack/router-core/ssr/server'
 import {
@@ -52,6 +54,7 @@ import {
 } from './finalManifest'
 
 import { HEADERS } from './constants'
+import { renderChannel, requestChannel } from './tracing'
 import { ServerFunctionSerializationAdapter } from './serializer/ServerFunctionSerializationAdapter'
 import type {
   AnyFunctionMiddleware,
@@ -76,6 +79,7 @@ import type {
   SsrResponse,
 } from '@tanstack/router-core/ssr/server'
 import type { FinalManifestOptions } from './finalManifest'
+import type { RequestTraceContext } from './tracing'
 
 type TODO = any
 
@@ -293,13 +297,23 @@ function getOwnedResponse(
   }
 }
 
+/**
+ * Names a traced pipeline step. Steps without one are not traced.
+ */
+type RequestTraceStep = Pick<RequestTraceContext, 'type' | 'name'>
+
+function isResponse(value: unknown): boolean {
+  return value instanceof Response
+}
+
 function createLateResponseDisposer(signal: AbortSignal) {
   return (result: TODO) => disposeResponseResult(result, signal.reason)
 }
 
 /**
  * Compose middleware around a terminal response handler. With no middleware
- * the terminal runs directly.
+ * the terminal runs directly. `getTraceStep` names the steps that are not
+ * plain middleware, such as a route handler or a server function.
  */
 async function executeMiddleware(
   middlewares: Array<TODO>,
@@ -308,6 +322,7 @@ async function executeMiddleware(
   signal: AbortSignal,
   event: StartEvent,
   terminalNext?: TODO,
+  getTraceStep?: (depth: number) => RequestTraceStep | undefined,
 ): Promise<HandlerCallbackResult> {
   let index = -1
   let responseOwnership: MiddlewareResponseOwnership | undefined
@@ -410,6 +425,32 @@ async function executeMiddleware(
 
   let nextPromise: Promise<TODO> | undefined
 
+  const runMiddleware = (
+    middleware: TODO,
+    depth: number,
+    isTerminal: boolean,
+    args: TODO,
+  ) => {
+    if (!shouldTrace(requestChannel)) {
+      return middleware(args)
+    }
+    const step =
+      getTraceStep?.(depth) ??
+      (isTerminal
+        ? undefined
+        : { type: 'middleware' as const, name: middleware.name || 'anonymous' })
+    if (!step) {
+      return middleware(args)
+    }
+
+    return traceOperation(
+      requestChannel,
+      { type: step.type, name: step.name, request: ctx.request, ctx },
+      () => middleware(args),
+      isResponse,
+    )
+  }
+
   function next(nextCtx?: TODO): Promise<TODO> {
     // Only the deepest started invocation can call next().
     const result = runNext(index, nextCtx)
@@ -454,7 +495,10 @@ async function executeMiddleware(
 
     let result: TODO
     try {
-      const pending = middleware({ ...ctx, next: middlewareNext })
+      const pending = runMiddleware(middleware, depth, isTerminal, {
+        ...ctx,
+        next: middlewareNext,
+      })
       // A directly returned next() promise already propagates request aborts.
       if (nextPromise && pending === nextPromise) {
         nextPromise = undefined
@@ -778,6 +822,9 @@ export function createStartHandler<TRegister = Register>(
         executedRequestMiddlewares,
         handlerType,
       }
+      let getTraceStep:
+        | ((depth: number) => RequestTraceStep | undefined)
+        | undefined
       let terminal: (
         ctx: PipelineContext,
       ) => Promise<HandlerCallbackResult | DeferredResponse>
@@ -799,6 +846,11 @@ export function createStartHandler<TRegister = Register>(
           throw new Error('Invalid server action param for serverFnId')
         }
 
+        getTraceStep = (depth) =>
+          depth === flattenedRequestMiddlewares.length
+            ? { type: 'server_function', name: serverFnId }
+            : undefined
+
         terminal = ({ context }) =>
           runWithStartContext(
             { ...startContext, contextAfterGlobalMiddlewares: context },
@@ -811,7 +863,7 @@ export function createStartHandler<TRegister = Register>(
       } else {
         // Runs as the route pipeline's terminal, which waits on the request
         // signal and disposes a result that settles after an abort.
-        const executeRouter = async (
+        const renderRouter = async (
           serverContext: TODO,
           matchedRoutes: ReadonlyArray<AnyRoute>,
           routerInstance: AnyRouter,
@@ -887,6 +939,22 @@ export function createStartHandler<TRegister = Register>(
           )
         }
 
+        const executeRouter = (
+          serverContext: TODO,
+          matchedRoutes: ReadonlyArray<AnyRoute>,
+          routerInstance: AnyRouter,
+        ): Promise<SsrResponse> => {
+          if (!shouldTrace(renderChannel)) {
+            return renderRouter(serverContext, matchedRoutes, routerInstance)
+          }
+
+          return traceOperation(
+            renderChannel,
+            { request, matchedRoutes, router: routerInstance },
+            () => renderRouter(serverContext, matchedRoutes, routerInstance),
+          )
+        }
+
         terminal = ({ context }) =>
           runWithStartContext(
             { ...startContext, contextAfterGlobalMiddlewares: context },
@@ -926,6 +994,8 @@ export function createStartHandler<TRegister = Register>(
             middlewareCtx,
             signal,
             event,
+            undefined,
+            getTraceStep,
           )
         }
       } catch (error) {
@@ -1165,6 +1235,9 @@ async function handleServerRoutes({
   let terminalHandler: TODO = (ctx: TODO) =>
     executeRouter(ctx.context, matchedRoutes, router)
   let terminalNext: TODO
+  let getTraceStep:
+    | ((depth: number) => RequestTraceStep | undefined)
+    | undefined
 
   // Collect middleware from matched routes, filtering out those already executed
   // in the request phase
@@ -1212,6 +1285,14 @@ async function handleServerRoutes({
         typeof handler === 'function' ? handler : handler.handler
       if (routeHandler) {
         const parsedHandler = withParsedParams(routeHandler, matchedRoutes)
+        const handlerDepth = routeMiddlewares.length
+        getTraceStep = (depth) =>
+          depth === handlerDepth
+            ? {
+                type: 'handler',
+                name: `${requestMethod} ${foundRoute.fullPath}`,
+              }
+            : undefined
         if (!mayDefer) {
           terminalHandler = parsedHandler
           terminalNext = throwIfMayNotDefer
@@ -1235,6 +1316,7 @@ async function handleServerRoutes({
     signal,
     event,
     terminalNext,
+    getTraceStep,
   )
 
   return normalizeSsrResponse(response)
